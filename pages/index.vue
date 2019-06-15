@@ -43,17 +43,10 @@
                     color="purple"
                     dark
                   >
-                    <v-btn icon :to="'/schedule/edit/'+event.id">
+                    <v-btn icon :to="'/schedule/'+event.id">
                       <v-icon>edit</v-icon>
                     </v-btn>
                     <v-toolbar-title v-html="event.title"></v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-btn icon>
-                      <v-icon>favorite</v-icon>
-                    </v-btn>
-                    <v-btn icon>
-                      <v-icon>more_vert</v-icon>
-                    </v-btn>
                   </v-toolbar>
                   <v-card-title primary-title color="gray">
                     <span
@@ -68,6 +61,14 @@
                       color="secondary"
                     >
                       Cancel
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      flat
+                      :to="'/schedule/'+event.id"
+                      color="primary"
+                    >
+                      Detail
                     </v-btn>
                   </v-card-actions>
                 </v-card>

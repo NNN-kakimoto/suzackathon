@@ -16,7 +16,7 @@
         >
           <v-icon>arrow_back</v-icon>
         </v-btn>
-        <v-toolbar-title>Create New Schedule on {{ $route.params.date }}</v-toolbar-title>
+        <v-toolbar-title>Schedule on {{ date }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn
           flat
@@ -68,6 +68,7 @@
         v-model="start_time"
         type="time"
         mask="time"
+        value="09:00:00"
         hint="開始時刻"
         name="start_time"
         ref="start_time"
@@ -89,17 +90,17 @@
 </template>
 
 <script>
-// import HttpClient from '@/apis/Httpclient'
 export default {
-  data () {
+  data(){
     return {
-      valid: true,
-      members: [],
       selectable_members: ['Kakimoto', 'Kazu', 'ShirasU'],
-      title: '',
-      detail: '',
-      start_time: '',
-      budget: '0',
+      valid: true,
+      date: '2019-06-20',
+      members: ['Kakimoto'],
+      title: 'タイトル',
+      detail: "詳細",
+      start_time: '10:00',
+      budget: '300',
       formHasErrors: false,
       rules: {
           required: value => !!value || '必須項目です',
@@ -111,36 +112,6 @@ export default {
           arr_required: value => value.length >= 2 || '誰か一人は設定してください',
         }
     }
-  },
-  mounted() {
-    // this.http_client = new HttpClient()
-  },
-  computed: {
-    form () {
-      return {
-        members: this.members,
-        title: this.title,
-        detail: this.detail,
-        start_time: this.start_time,
-        budget: this.budget,
-        date: this.$route.date,
-      }
-    }
-  },
-  methods: {
-    submit () {
-      this.formHasErrors = false
-      if(this.$refs.form.validate()){
-        this.post()
-      }
-      return false
-    },
-    async post() {
-      // this.response = await this.http_client.postSchedule(this.$refs.form)
-      // if (this.response.status === 200) {
-      //   this.$router.replace({ path: `/` })
-      // }
-    },
   }
 }
 </script>
