@@ -125,7 +125,7 @@ export default {
     this.today = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate()
 
     let table = firebase.database().ref('events-calendar/')
-    table.once("value").then(data => { 
+    table.on("value", (data => { 
       const rows = data.val()
       for(let key of Object.keys(rows)) {
         this.events.push({
@@ -136,7 +136,7 @@ export default {
           open: false
         })
       }
-    } )
+    } ) )
   },
   computed:{
     eventsMap(){

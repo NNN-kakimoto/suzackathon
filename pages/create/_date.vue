@@ -35,7 +35,7 @@
         hide-no-data
         hide-selected
         multiple
-        :rules="[rules.required]"
+        :rules="[rules.arr_required]"
         ref="members"
         name="members"
       ></v-autocomplete>
@@ -47,7 +47,7 @@
         hint="タイトル"
         name="title"
         ref="title"
-        :rules="[rules.arr_required]"
+        :rules="[rules.required]"
       ></v-text-field>
       <v-divider></v-divider>
       <v-textarea
@@ -59,7 +59,7 @@
         hint="詳細"
         name="detail"
         ref="detail"
-        :rules="[rules.counter]"
+        :rules="[rules.required]"
       ></v-textarea>
       <v-divider></v-divider>
       <v-text-field
@@ -100,7 +100,7 @@ export default {
         members: [],
         title: '',
         detail: '',
-        start_time: '',
+        start_time: '09:00',
         budget: '0',
       },
       formHasErrors: false,
@@ -111,7 +111,7 @@ export default {
             return pattern.test(value) || '半角数字で入力してください'
           },
           counter: value => value.length <= 240 || '最大240文字です',
-          arr_required: value => value.length >= 2 || '誰か一人は設定してください',
+          arr_required: value => value.length >= 1 || '誰か一人は設定してください',
         }
     }
   },
@@ -126,7 +126,7 @@ export default {
         detail: this.schedule.detail,
         start_time: this.schedule.start_time,
         budget: this.schedule.budget,
-        date: this.schedule.$route.date,
+        date: this.schedule.date,
       }
     }
   },
@@ -148,7 +148,8 @@ export default {
         detail: this.schedule.detail,
         date: this.schedule.date,
       }
-      return firebase.database().ref().update(updates);
+      firebase.database().ref().update(updates)
+      return this.$router.push('/schedule/' + newPostKey)
     },
   }
 }
