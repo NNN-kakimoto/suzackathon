@@ -9,17 +9,6 @@
     >
       
       <v-list>
-        <!-- <v-list-title v-if="!miniVariant">
-          <v-list-tile-action>
-            <v-icon @click.stop="miniVariant = !miniVariant">chevron_left</v-icon>
-          </v-list-tile-action>
-        </v-list-title>
-        <v-list-title v-if="miniVariant">
-          <v-list-tile-action>
-            <v-icon @click.stop="miniVariant = !miniVariant">chevron_right</v-icon>
-          </v-list-tile-action>
-        </v-list-title> -->
-
         <v-list-tile
           v-for="(item, i) in items"
           :key="i"
