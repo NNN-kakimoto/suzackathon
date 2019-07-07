@@ -110,86 +110,40 @@
 </template>
 
 <script>
-// import HttpClient from '@/apis/Httpclient'
+import firebase from "~/plugins/firebase-config.js"
 export default {
   components: {
   },
   data() {
     return {
       today: '',
-      response: [],
-      events: [
-        {
-          id: '1',
-          title: 'Vacation',
-          details: 'Going to the beach!',
-          date: '2019-05-30',
-          open: false
-        },
-        {
-          id: '2',
-          title: 'Vacation',
-          details: 'Going to the beach!',
-          date: '2019-05-31',
-          open: false
-        },
-        {
-          id: '3',
-          title: 'Vacation',
-          details: 'Going to the beach!',
-          date: '2019-06-01',
-          open: false
-        },
-        {
-          id: '4',
-          title: 'Meeting',
-          details: 'Spending time on how we do not have enough time',
-          date: '2019-06-07',
-          open: false
-        },
-        {
-          id: '5',
-          title: '30th Birthday',
-          details: 'Celebrate responsibly',
-          date: '2019-06-03',
-          open: false
-        },
-        {
-          id: '6',
-          title: 'New Year',
-          details: 'Eat chocolate until you pass out',
-          date: '2019-06-01',
-          open: false
-        },
-        {
-          id: '7',
-          title: 'Conference',
-          details: 'Mute myself the whole time and wonder why I am on this call',
-          date: '2019-06-21',
-          open: false
-        },
-        {
-          id: '8',
-          title: 'Hackathon',
-          details: 'Code like there is no tommorrow',
-          date: '2019-07-01',
-          open: false
-        }
-      ]
+      events: [],
     }
   },
   created() {
-    // this.http_client = new HttpClient()
     const date = new Date()
     this.today = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate()
-    this.getSchedules()
+
+    let table = firebase.database().ref('events-calendar/')
+    table.once("value").then(data => { 
+      const rows = data.val()
+      for(let key of Object.keys(rows)) {
+        this.events.push({
+          id: key,
+          title: rows[key].title,
+          details: rows[key].detail,
+          date: rows[key].date,
+          open: false
+        })
+      }
+    } )
   },
   computed:{
-    eventsMap () {
-        const map = {}
-        this.events.forEach(e => (map[e.date] = map[e.date] || []).push(e))
-        return map
-      }
+    eventsMap(){
+      const map = {}
+      this.events.forEach(e => (map[e.date] = map[e.date] || []).push(e))
+      return map
+    }
   },
   methods: {
     clickDay(date){
@@ -199,31 +153,22 @@ export default {
     open (event) {
       alert(event.title)
     },
-    async getSchedules(){
-      // this.response = await this.http_client.getSchedules()
-      // console.log(this.response)
-      // if(this.response.error != undefined){
-      //   this.events = this.response
-      // }else{
-      //   console.log('何か問題が発生したようです')
-      // }
-    }
   }
 }
 </script>
 <style lang="stylus" scoped>
 .my-event {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border-radius: 2px;
-    background-color: purple;
-    color: #ffffff;
-    border: 1px solid purple;
-    width: 100%;
-    font-size: 12px;
-    padding: 3px;
-    cursor: pointer;
-    margin-bottom: 1px;
-  }
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 2px;
+  background-color: purple;
+  color: #ffffff;
+  border: 1px solid purple;
+  width: 100%;
+  font-size: 12px;
+  padding: 3px;
+  cursor: pointer;
+  margin-bottom: 1px;
+}
 </style>

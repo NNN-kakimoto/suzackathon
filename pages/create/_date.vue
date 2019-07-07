@@ -26,7 +26,7 @@
         </v-btn>
       </v-toolbar>
       <v-autocomplete
-        v-model="members"
+        v-model="schedule.members"
         :items="selectable_members"
         chips
         label="Member"
@@ -42,7 +42,7 @@
       <v-divider></v-divider>
       <v-text-field
         label="Title"
-        v-model="title"
+        v-model="schedule.title"
         full-width
         hint="タイトル"
         name="title"
@@ -51,7 +51,7 @@
       ></v-text-field>
       <v-divider></v-divider>
       <v-textarea
-        v-model="detail"
+        v-model="schedule.detail"
         label="Detail"
         counter
         maxlength="240"
@@ -65,7 +65,7 @@
       <v-text-field
         label="Start time"
         full-width
-        v-model="start_time"
+        v-model="schedule.start_time"
         type="time"
         mask="time"
         hint="開始時刻"
@@ -77,7 +77,7 @@
         label="Budget / person"
         suffix="円"
         type="number"
-        v-model="budget"
+        v-model="schedule.budget"
         full-width
         :rules="[rules.number]"
         hint="一人あたりの予算"
@@ -89,17 +89,20 @@
 </template>
 
 <script>
-// import HttpClient from '@/apis/Httpclient'
+import firebase from '~/plugins/firebase-config.js'
 export default {
   data () {
     return {
       valid: true,
-      members: [],
       selectable_members: ['Kakimoto', 'Kazu', 'ShirasU'],
-      title: '',
-      detail: '',
-      start_time: '',
-      budget: '0',
+      schedule: {
+        date: this.$route.params.date,
+        members: [],
+        title: '',
+        detail: '',
+        start_time: '',
+        budget: '0',
+      },
       formHasErrors: false,
       rules: {
           required: value => !!value || '必須項目です',
@@ -118,12 +121,12 @@ export default {
   computed: {
     form () {
       return {
-        members: this.members,
-        title: this.title,
-        detail: this.detail,
-        start_time: this.start_time,
-        budget: this.budget,
-        date: this.$route.date,
+        members: this.schedule.members,
+        title: this.schedule.title,
+        detail: this.schedule.detail,
+        start_time: this.schedule.start_time,
+        budget: this.schedule.budget,
+        date: this.schedule.$route.date,
       }
     }
   },
@@ -136,10 +139,16 @@ export default {
       return false
     },
     async post() {
-      // this.response = await this.http_client.postSchedule(this.$refs.form)
-      // if (this.response.status === 200) {
-      //   this.$router.replace({ path: `/` })
-      // }
+      let newPostKey = firebase.database().ref().child('events').push().key;
+
+      let updates = {};
+      updates['events/'+ newPostKey] = this.schedule
+      updates['events-calendar/' + newPostKey] = {
+        title: this.schedule.title,
+        detail: this.schedule.detail,
+        date: this.schedule.date,
+      }
+      return firebase.database().ref().update(updates);
     },
   }
 }

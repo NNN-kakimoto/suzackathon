@@ -20,7 +20,8 @@ export default {
         href:
           'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
       }
-    ]
+    ],
+    script: []
   },
   /*
   ** Customize the progress-bar color
@@ -35,11 +36,13 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '@/plugins/firebase-config.js',
   ],
   /*
   ** Nuxt.js modules
   */
   modules: [
+    '@nuxtjs/dotenv',
     '@nuxtjs/vuetify',
   ],
   /*
