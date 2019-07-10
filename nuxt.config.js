@@ -37,6 +37,7 @@ export default {
   */
   plugins: [
     '@/plugins/firebase-config.js',
+    '@/plugins/axios.js',
   ],
   /*
   ** Nuxt.js modules
@@ -44,6 +45,7 @@ export default {
   modules: [
     '@nuxtjs/dotenv',
     '@nuxtjs/vuetify',
+    '@nuxtjs/axios',
   ],
   /*
   ** vuetify module configuration
@@ -59,6 +61,15 @@ export default {
       error: colors.deepOrange.accent4,
       success: colors.green.accent3
     }
+  },
+  axios: {
+    // See https://github.com/nuxt-community/axios-module#options
+    // proxy: true,
+    proxyHeaders: false,
+    credentials: false
+  },
+  proxy: {
+    '/api/': {target: 'asia-northeast1-suzackathon.cloudfunctions.net', pathRewrite: {'^/api/': '/'}},
   },
   /*
   ** Build configuration

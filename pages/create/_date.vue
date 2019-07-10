@@ -94,7 +94,8 @@ export default {
   data () {
     return {
       valid: true,
-      selectable_members: ['Kakimoto', 'Kazu', 'ShirasU'],
+      selectable_members: [],
+      line_id_list: {},
       schedule: {
         date: this.$route.params.date,
         members: [],
@@ -116,7 +117,7 @@ export default {
     }
   },
   mounted() {
-    // this.http_client = new HttpClient()
+    this.getMember()
   },
   computed: {
     form () {
@@ -131,6 +132,15 @@ export default {
     }
   },
   methods: {
+    getMember(){
+      firebase.database().ref('users').on("value", (users => {
+        const ids = users.val()
+        for(const[id, member] of Object.entries(ids)){
+          this.selectable_members.push(member.name)
+          this.line_id_list[member.name] = id
+        }
+      }) )
+    },
     submit () {
       this.formHasErrors = false
       if(this.$refs.form.validate()){
