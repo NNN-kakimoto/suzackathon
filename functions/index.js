@@ -145,7 +145,7 @@ const setJsonMessage = (event) => {
                 },
                 {
                   "type": "text",
-                  "text": event.start_time.slice(0, 3) + ':' + event.start_time.slice(3, event.start_time.length),
+                  "text": event.start_time,
                   "size": "sm",
                   "color": "#111111",
                   "align": "end"
@@ -207,14 +207,14 @@ exports.lineNotice = functions.region('asia-northeast1').https.onRequest((reques
       let valid_users = [];
       console.log(request_ids)
       request_ids.map( id => {
-        admin.database().ref('usrs/'+id).once("value", user => {
+        admin.database().ref('users/'+id).once("value", user => {
           if(user.val() != null){
             valid_users.push(id)
           }
         });
       });
       console.log(valid_users);
-      sendMessage(text_message, messageJson, valid_users);
+      sendMessage(text_message, messageJson, request_ids);
       response.send('send message')
     }
   }));
