@@ -128,10 +128,12 @@
 
 <script>
 import firebase from '~/plugins/firebase-config.js'
+import axios from 'axios'
 export default {
   data(){
     return {
-      selectable_members: ['Kakimoto', 'Kazu', 'ShirasU'],
+      selectable_members: [],
+      line_id_list: {},
       valid: true,
       schedule: {
         date: '',
@@ -151,19 +153,30 @@ export default {
         counter: value => value.length <= 240 || '最大240文字です',
         arr_required: value => value.length >= 1 || '誰か一人は設定してください',
       },
-      dialog: false
+      dialog: false,
+      line_notice_url: 'https://asia-northeast1-suzackathon.cloudfunctions.net/linePushNotice'
     }
   },
   mounted() {
     this.getShcedule()
+    this.getMember()
   },
   methods: {
+    getMember(){
+      firebase.database().ref('users').on("value", (users => {
+        const ids = users.val()
+        for(const[id, member] of Object.entries(ids)){
+          this.selectable_members.push(member.name)
+          this.line_id_list[member.name] = id
+        }
+      }) )
+    },
     getShcedule(){
       this.id = this.$route.params.id
       let table = firebase.database().ref('events/'+ this.id)
       table.on("value", ( data => { 
         this.schedule = data.val()
-        }) )
+      }) )
     },
     submit () {
       this.formHasErrors = false
@@ -182,8 +195,17 @@ export default {
       }
       firebase.database().ref().update(updates)
     },
-    line_notice(){
+    async line_notice(){
       //ライン通知する
+      let line_ids = [];
+      this.schedule.members.map(member => {
+        line_ids.push(this.line_id_list[member])
+      });
+      if(line_ids.length > 0){
+        let body = { ids: line_ids } //JSON.stringify(body)
+        const response = await this.$axios.$get('https://asia-northeast1-suzackathon.cloudfunctions.net/lineNotice')
+        console.log(response.data)
+      }
     },
     deleteSchedule(){
       firebase.database().ref('events/' + this.id).remove()
